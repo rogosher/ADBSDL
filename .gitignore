@@ -2,3 +2,5 @@
 *.swp
 
 lib/
+obj/
+bin/

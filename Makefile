@@ -1,5 +1,10 @@
-CFLAGS	= -w -ansi
-LFLAGS	= -I. -lSDL2
+TARGET	= game
+
+CC	= g++
+CFLAGS	= -Wall -I.
+
+LD	= g++ -o
+LFLAGS	= -Wall -I. -lSDL2
 
 SRC_DIR = src
 OBJ_DIR = obj
