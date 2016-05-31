@@ -1,15 +1,16 @@
 TARGET	= game
 
-CC	= g++
-CFLAGS	= -Wall -I.
-
-LD	= g++ -o
-LFLAGS	= -Wall -I. -lSDL2
-
 SRC_DIR = src
 OBJ_DIR = obj
 BIN_DIR = bin
 LIB_DIR = lib
+INC_DIR = -I./include/Arduboy/src -I./tmp/avr-libc-2.0.0/include -I./include -I./include/Arduino/hardware/arduino/avr/cores/arduino
+
+CC	= g++
+CFLAGS	= -Wall -I. $(INC_DIR)
+
+LD	= g++ -o
+LFLAGS	= -Wall -I. -lSDL2 -I$(INC_DIR)
 
 SOURCES := $(wildcard $(SRC_DIR)/*.cpp)
 INCLUDES := $(wildcard $(SRC_DIR)/*.h)

@@ -4,8 +4,17 @@
 #include <time.h>
 #include <iostream>
 
+#ifdef _WIN32
 #define _WIN32_WINNT 0x500
 #include <windows.h>
+#endif
+
+#include "Arduboy.h"
+/*
+#ifdef linux
+
+#endif
+*/
 
 // Check if WIDTH or HEIGHT has been defined
 #ifndef WIDTH
@@ -15,6 +24,10 @@
 #define HEIGHT 64
 #endif
 
+struct ABDSDL {
+    SDL_Renderer* renderer;
+} ABDSDL;
+
 // Entry point for application
 int main (int arc, char* argv[])
 {
@@ -22,7 +35,7 @@ int main (int arc, char* argv[])
     HWND consoleWindow = GetConsoleWindow();
 
     SDL_Window *window;     // pointer to window
-    SDL_Renderer *renderer; // pointer to renderer
+    //SDL_Renderer *renderer; // pointer to renderer
 
     SDL_Init(SDL_INIT_VIDEO);
     SDL_Init(SDL_INIT_AUDIO);
@@ -45,14 +58,12 @@ int main (int arc, char* argv[])
             SDL_RENDERER_TARGETTEXTURE);
     */
 
-    renderer = SDL_CreateRenderer(window, -1,
-            SDL_RENDERER_TARGETTEXTURE);
+    ABDSDL.renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_TARGETTEXTURE);
 
     // Check if window has been created
     if (!window)
         return 1;
 
-    display.setRenderer(renderer);
 
     // Main application loop
     for (;;)
@@ -67,7 +78,7 @@ int main (int arc, char* argv[])
         }
     }
 
-    SDL_DestroyRenderer(renderer);
+    SDL_DestroyRenderer(ABDSDL.renderer);
     SDL_DestroyWindow(window);
 
     SDL_Quit();
