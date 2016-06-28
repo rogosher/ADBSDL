@@ -1,7 +1,7 @@
 #include <SDL.h>
 
 #include <stdlib.h>
-#include <time.h>
+//#include <time.h>
 #include <iostream>
 
 #ifdef _WIN32
@@ -9,7 +9,7 @@
 #include <windows.h>
 #endif
 
-#include "Arduboy.h"
+//#include "Arduboy.h"
 /*
 #ifdef linux
 
@@ -29,7 +29,7 @@ struct ABDSDL {
 } ABDSDL;
 
 // Entry point for application
-int main (int arc, char* argv[])
+int main (int argc, char *argv[])
 {
     // Windows
     HWND consoleWindow = GetConsoleWindow();
