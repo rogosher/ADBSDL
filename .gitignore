@@ -1,8 +1,12 @@
 *.swo
 *.swp
 
-lib/
 obj/
 bin/
 include/
 tmp/
+
+sketchbook/
+
+lib/SDL2*
+lib/Arduino
