@@ -1,0 +1,13 @@
+MSYS-1.0.17 Build:2011-04-24 23:39
+Exception: STATUS_ACCESS_VIOLATION at eip=6085A9DA
+eax=60E9263C ebx=00000000 ecx=00000000 edx=60E92640 esi=0028E370 edi=676F7250
+ebp=0028E778 esp=0028D360 program=C:\ruby_dev\bin\make.exe
+cs=0023 ds=002B es=002B fs=0053 gs=002B ss=002B
+Stack trace:
+Frame     Function  Args
+0028E778  6085A9DA  (00000000, 0028E7E0, 676F7250, 0A057588)
+0028E7A8  6085CDB6  (00000000, 00000003, 0028E7E0, 676F7250)
+0028E7C8  6080E236  (0028E7E0, 676F7250, 00000000, 00000000)
+0028EBF8  60882726  (2F632F3A, 676F7250, 206D6172, 656C6946)
+ 189505 [main] make.exe" 9044 handle_exceptions: Exception: STATUS_ACCESS_VIOLATION
+ 200780 [main] make.exe" 9044 handle_exceptions: Error while dumping state (probably corrupted stack)
