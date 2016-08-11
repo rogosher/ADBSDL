@@ -40,7 +40,7 @@ CXXFLAGS        += -pedantic -Wall -Wextra
 #LFAGS            = -mconsole
 
 CURRENT_DIR      = $(shell basename $(CURDIR))
-#OBJDIR           = $(PROJECT_DIR)/bin/Arduboy/$(CURRENT_DIR)
+OBJDIR           = $(PROJECT_DIR)/bin/Arduboy/$(CURRENT_DIR)
 
 SDL_OBJDIR       = $(PROJECT_DIR)/obj
 

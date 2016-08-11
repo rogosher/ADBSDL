@@ -10,3 +10,6 @@ sketchbook/
 
 lib/SDL2*
 lib/Arduino
+
+*.stackdump
+*.bak
