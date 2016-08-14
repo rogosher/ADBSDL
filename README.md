@@ -30,4 +30,15 @@ git checkout -b develop origin/develop
 
 ## Using
 
-...
+To us the Vagrant instance provided, change you working directory to the location where this project was cloned. Run `vagrant` with the command `up`:
+
+~~~~~~~~~
+vagrant up
+~~~~~~~~~
+
+After which the machine should attempt to boot.
+
+### Compiling a Project
+
+Currently the project is stored in `/opt/.../`. Please run `make` from this directory.
+
