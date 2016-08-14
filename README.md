@@ -25,7 +25,7 @@ git branch -a
 Select and checkout an available branch to a local tracking branch. Below we checkout and start using the `develop` branch.
 
 ~~~~~~~~~
-git checkout -b experimental origin/develop
+git checkout -b develop origin/develop
 ~~~~~~~~~
 
 ## Using
