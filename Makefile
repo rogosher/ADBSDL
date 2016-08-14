@@ -1,8 +1,12 @@
 # Makefile
 # Author: Ross
 # This Makefile is intended to build source for the Arduboy
+mkfile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
+current_dir := $(notdir $(patsubst %/,%,$(dir $(mkfile_path))))
+
 TARGET         = test_game
-PROJECT_DIR    = G:/share/projects/arduboy/adbsdl
+
+PROJECT_DIR    = $(current_dir)
 
 ARDMK_DIR      = $(PROJECT_DIR)/tmp/Arduino-Makefile
 
@@ -97,6 +101,6 @@ $(call arduboy_output,$(CURRENT_OS))
 #.PHONEY: clean-arduboy test
 
 #clean-arduboy:
-#	@$(RM) $(SDL_OBJECTS)
+#	@$(RM) $(SDL_OBJECTS)https://github.com/rogosher/ADBSDL/tree/develop
 
 include $(ARDMK_DIR)/Arduino.mk
