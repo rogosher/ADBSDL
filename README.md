@@ -28,7 +28,7 @@ Select and checkout an available branch to a local tracking branch. Below we che
 git checkout -b develop origin/develop
 ~~~~~~~~~
 
-## Using
+## Use
 
 To us the Vagrant instance provided, change you working directory to the location where this project was cloned. Run `vagrant` with the command `up`:
 
