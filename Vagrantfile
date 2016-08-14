@@ -1,6 +1,8 @@
 $init_script = <<SCRIPT
 apt-get update
 apt-get upgrade
+apt-get build-dep arduino-mk
+apt-get install arduino-core build-essential dpkg-dev fakeroot devscripts
 apt-get install -y arduino-mk python-serial arduino-core
 
 SCRIPT
