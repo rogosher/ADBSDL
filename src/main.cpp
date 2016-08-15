@@ -1,13 +1,13 @@
-#include "SDL.h"
+#include <SDL.h>
 
 #include <stdlib.h>
 //#include <time.h>
 #include <iostream>
 
-#ifdef _WIN32
-#define _WIN32_WINNT 0x500
+//#ifdef _WIN32
+//#define _WIN32_WINNT 0x500
 #include <windows.h>
-#endif
+//#endif
 
 //#include "Arduboy.h"
 /*

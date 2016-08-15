@@ -2,24 +2,24 @@
 # Author: Ross
 # This Makefile is intended to build source for the Arduboy
 
-# use local directory
+# use local directory for arduino-makefile
 #arduino_mk_path := $(abspath $(lastword $(MAKEFILE_LIST)))
 #current_dir := $(notdir $(patsubst %/,%,$(dir $(mkfile_path))))
 
 # use debian installation path, used for included vagrant
 arduino_mk_path := /usr/share/arduino
-current_dir := $(shell pwd)
+current_dir     := $(shell pwd)
 
-TARGET         = test_game
+TARGET = test_game
 
-PROJECT_DIR    = $(current_dir)
+PROJECT_DIR = $(current_dir)
 
 CFLAGS_STD       = -std=gnu11
 CXXFLAGS_STD     = -std=gnu++11 -fno-threadsafe-statics
 
 CXXFLAGS        += -pedantic -Wall -Wextra
 
-#CXX              = g++
+CXX              = g++
 #LD               = g++ -o
 #LFAGS            = -mconsole
 
@@ -33,12 +33,15 @@ SDL_SOURCE      := $(wildcard $(PROJECT_DIR)/src/*.cpp)
 SDL_INCLUDE     := $(wildcard $(PROJECT_DIR)/src/*.h)
 SDL_OBJECTS     := $(SDL_SOURCE:$(PROJECT_DIR)/src/%.cpp=$(SDL_OBJDIR)/%.o)
 
+SDL_LDFLAGS = `$(SDL_ROOT_DIR)/sdl2-config --libs` \
+	      -static-libgcc -static-libstdc++
+
 TARGET_BIN_SDL = $(PROJECT_DIR)/bin/$(SDL_TARGET)
 
 RM = rm -f
 MKDIR = mkdir -p
 
-arduboy_output = $(info $(1))
+print_output = $(info $(1))
 
 #$(TARGET_BIN_SDL): $(SDL_OBJECTS)
 #	@echo $@
@@ -63,7 +66,34 @@ else
     endif
 endif
 
-$(call arduboy_output,$(CURRENT_OS))
+$(call print_output,$(CURRENT_OS))
+
+ECHO = printf
+
+define ARDUBOY_HELP
+Available targets:
+  make                   - compile the code
+  make sdl               - compile SDL2 project
+endef
+
+export ARDUBOY_HELP
+
+$(call print_output,$(MAKECMDGOALS))
+
+ifeq (sdl_win,$(MAKECMDGOALS))
+    CXX = x86_64-w64-mingw32-g++
+endif
+
+$(TARGET_BIN_SDL): $(SDL_OBJECTS)
+	@$(LD) $@ $(LFLAGS) $(SDL_OBJECTS) `sdl-config --libs`
+
+$(SDL_OBJECTS): $(SDL_OBJDIR)/%.o : $(PROJECT_DIR)/src/%.cpp
+	@$(CXX) $(CXXFLAGS) `sdl2-config --cflags` -c $< -o $@
+
+sdl_win:
+	echo "building SDL2..."
+help:
+	echo "$$ARDUBOY_HELP"
 
 #rule1:
 #	@echo  $@
@@ -83,4 +113,5 @@ $(call arduboy_output,$(CURRENT_OS))
 #clean-arduboy:
 #	@$(RM) $(SDL_OBJECTS)https://github.com/rogosher/ADBSDL/tree/develop
 
-include $(arduino_mk_path)/Arduino.mk
+# Arduino Content
+#include $(arduino_mk_path)/Arduino.mk

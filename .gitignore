@@ -15,3 +15,5 @@ lib/Arduino
 
 *.stackdump
 *.bak
+
+*.log

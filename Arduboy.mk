@@ -1,12 +1,20 @@
 # Arduboy.mk
+########################################################################
+# ARDUINO_DIR
+# Uncomment the directory that holds your Arduino IDE
+#
 
-ARDMK_DIR      = $(PROJECT_DIR)/tmp/Arduino-Makefile
-
-### ARDUINO_DIR
-### Uncomment the directory that holds your Arduino IDE
+# Mac ?#
 #ARDUINO_DIR    = /Applications/Arduino.app/Contents/Java
-#ARDUINO_DIR    = /usr/share/Arduino
+# Debian / Ubuntu
+#ARDUINO_DIR    = /usr/share/arduino
+# Local
 ARDUINO_DIR    = $(PROJECT_DIR)/lib/Arduino
+
+ifeq ($(CURRENT_OS),LINUX)
+	ARDUINO_DIR = /usr/share/arduino
+endif
+
 ARDUINO_SKETCHBOOK = $(PROJECT_DIR)/sketchbook
 
 AVR_LD_PATH = $(ARDUINO_DIR)/hardware/tools/avr/avr/bin
