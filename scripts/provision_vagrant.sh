@@ -4,7 +4,6 @@
 
 ################################################################################
 # quickfix for ubuntu xenial
-#
 
 if ! grep -q $(cat /etc/hostname) /etc/hosts; then
 	echo >> /etc/hosts
@@ -13,7 +12,6 @@ fi
 
 ################################################################################
 # provision system packages
-#
 
 apt-get update
 #apt-get upgrade
@@ -38,14 +36,14 @@ apt-get install -y mingw-w64
 # download and expand the SDL2 libraries
 # packages:
 #   SDL2 Image - https://www.libsdl.org/projects/SDL_image/
-#
 
 # create the output directory
 sdl2_output=/tmp/Arduboy_SDL2
 mkdir -p $sdl2_output
 
+# function download_and_unpack
+# parameters [ url, file, output location ]
 function download_and_unpack {
-	# parameters [ url, file, output location ]
 	wget --progress=bar:force $1/$2 -O $3/$2
 	tar -xzf $3/$2 -C $sdl2_output
 }
@@ -56,7 +54,6 @@ sdl2_url=https://www.libsdl.org
 sdl2_download_url=https://www.libsdl.org/release
 
 download_and_unpack $sdl2_download_url SDL2-$sdl2_suffix $sdl2_output
-
 # download sdl packages
 sdl2_projects_url=https://www.libsdl.org/projects
 sdl2_packages=(image)
@@ -68,11 +65,12 @@ for package in ${sdl2_packages[@]}; do
 				$sdl2_output
 done
 
-exit
-
-# TODO: iterate through folders at /tmp/Arduboy_SDL2 and run make in each
-
 # install the SDL2 development libraries
-cd /tmp/SDL2
-make cross CROSS_PATH=/usr
-
+# search through all folders in `sdl_output`
+for d in $sdl2_output/* ; do
+	if [ -d $d ]; then
+		echo "making $d..."
+		cd $d
+		make cross CROSS_PATH=/usr
+	fi
+done
