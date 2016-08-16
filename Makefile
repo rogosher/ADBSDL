@@ -10,18 +10,20 @@
 arduino_mk_path := /usr/share/arduino
 current_dir     := $(shell pwd)
 
-TARGET = test_game
+TARGET = game
 
 PROJECT_DIR = $(current_dir)
 
 CFLAGS_STD       = -std=gnu11
-CXXFLAGS_STD     = -std=gnu++11 -fno-threadsafe-statics
 
-CXXFLAGS        += -pedantic -Wall -Wextra
-
+CC               = gcc
 CXX              = g++
 #LD               = g++ -o
 #LFAGS            = -mconsole
+
+CXXFLAGS_STD     = -std=gnu++11 -fno-threadsafe-statics
+CXXFLAGS        += -pedantic -Wall -Wextra
+
 
 CURRENT_DIR      = $(shell basename $(CURDIR))
 OBJDIR           = $(PROJECT_DIR)/bin/Arduboy/$(CURRENT_DIR)
@@ -31,7 +33,9 @@ SDL_OBJDIR       = $(PROJECT_DIR)/obj
 SDL_TARGET       = game
 SDL_SOURCE      := $(wildcard $(PROJECT_DIR)/src/*.cpp)
 SDL_INCLUDE     := $(wildcard $(PROJECT_DIR)/src/*.h)
-SDL_OBJECTS     := $(SDL_SOURCE:$(PROJECT_DIR)/src/%.cpp=$(SDL_OBJDIR)/%.o)
+
+SDL_OBJECTS       := $(SDL_SOURCE:$(PROJECT_DIR)/src/%.cpp=$(SDL_OBJDIR)/%.o)
+SDL_OBJECTS_WIN32 := $(SDL_SOURCE:$(PROJECT_DIR)/src/%.cpp=$(SDL_OBJDIR)/win32/%.o)
 
 SDL_LDFLAGS = `$(SDL_ROOT_DIR)/sdl2-config --libs` \
 	      -static-libgcc -static-libstdc++
@@ -67,9 +71,6 @@ else
 endif
 
 $(call print_output,$(CURRENT_OS))
-
-ECHO = printf
-
 define ARDUBOY_HELP
 Available targets:
   make                   - compile the code
@@ -80,16 +81,46 @@ export ARDUBOY_HELP
 
 $(call print_output,$(MAKECMDGOALS))
 
+ECHO = printf
+
 ifeq (sdl_win,$(MAKECMDGOALS))
     CXX = x86_64-w64-mingw32-g++
 endif
 
-$(TARGET_BIN_SDL): $(SDL_OBJECTS)
-	@$(LD) $@ $(LFLAGS) $(SDL_OBJECTS) `sdl-config --libs`
+SDL_LIBS = 
+SDL_EXTRALIBS = -lSDL2_image
 
-$(SDL_OBJECTS): $(SDL_OBJDIR)/%.o : $(PROJECT_DIR)/src/%.cpp
-	@$(CXX) $(CXXFLAGS) `sdl2-config --cflags` -c $< -o $@
+win32: CROSS_TOOLS_LOC := /usr/x86_64-w64-mingw32
+win32: CXX := x86_64-mingw32-g++
+win32: CXXFLAGS := -I$(CROSS_TOOLS_LOC)/lib
 
+$(SDL_OBJECTS_WIN32): CROSS_TOOLS_LOC := /usr/x86_64-w64-mingw32
+$(SDL_OBJECTS_WIN32): CXX := x86_64-w64-mingw32-g++
+$(SDL_OBJECTS_WIN32): CXXFLAGS := -I$(CROSS_TOOLS_LOC)/include/SDL2
+
+$(TARGET_BIN_SDL)_win32: LD := x86_64-w64-mingw32-g++
+$(TARGET_BIN_SDL)_win32: LFLAGS := -static -static-libgcc
+####
+# Linux standard
+####
+#$(TARGET_BIN_SDL): $(SDL_OBJECTS)
+#	$(LD) $@ $(LFLAGS) $(SDL_OBJECTS) `sdl-config --libs`
+
+#$(SDL_OBJECTS): $(SDL_OBJDIR)/%.o : $(PROJECT_DIR)/src/%.cpp
+#	$(CXX) $(CXXFLAGS) `sdl2-config --cflags` -c $< -o $@
+
+####
+# Windows attempt using mingw
+###
+$(TARGET_BIN_SDL): $(SDL_OBJECTS_WIN32)
+	$(LD) $@ $(LFLAGS) $(SDL_OBJECTS_WIN) `sdl-config --libs`
+
+$(SDL_OBJECTS_WIN32): $(SDL_OBJDIR)/win32/%.o : $(PROJECT_DIR)/src/%.cpp
+	$(CXX) $(CXXFLAGS) `sdl2-config --cflags` -c $< -o $@
+
+####
+# Targets
+####
 sdl_win:
 	echo "building SDL2..."
 help:
