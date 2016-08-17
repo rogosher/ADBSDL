@@ -17,3 +17,5 @@ lib/Arduino
 *.bak
 
 *.log
+
+*.exe

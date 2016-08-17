@@ -1,8 +1,3 @@
-#include <SDL.h>
-
-#include <stdlib.h>
-//#include <time.h>
-#include <iostream>
 
 //#ifdef _WIN32
 //#define _WIN32_WINNT 0x500
@@ -13,8 +8,14 @@
 /*
 #ifdef linux
 
+//#include <stdlib.h>
+//#include <iostream>
+//#include <time.h>
+//
 #endif
 */
+
+#include <SDL.h>
 
 // Check if WIDTH or HEIGHT has been defined
 #ifndef WIDTH

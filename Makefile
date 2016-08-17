@@ -8,55 +8,9 @@
 
 # use debian installation path, used for included vagrant
 arduino_mk_path := /usr/share/arduino
+win32_usr_path  := /usr/i686-w64-mingw32/bin
 current_dir     := $(shell pwd)
 
-TARGET = game
-
-PROJECT_DIR = $(current_dir)
-
-CFLAGS_STD       = -std=gnu11
-
-CC               = gcc
-CXX              = g++
-#LD               = g++ -o
-#LFAGS            = -mconsole
-
-CXXFLAGS_STD     = -std=gnu++11 -fno-threadsafe-statics
-CXXFLAGS        += -pedantic -Wall -Wextra
-
-
-CURRENT_DIR      = $(shell basename $(CURDIR))
-OBJDIR           = $(PROJECT_DIR)/bin/Arduboy/$(CURRENT_DIR)
-
-SDL_OBJDIR       = $(PROJECT_DIR)/obj
-
-SDL_TARGET       = game
-SDL_SOURCE      := $(wildcard $(PROJECT_DIR)/src/*.cpp)
-SDL_INCLUDE     := $(wildcard $(PROJECT_DIR)/src/*.h)
-
-SDL_OBJECTS       := $(SDL_SOURCE:$(PROJECT_DIR)/src/%.cpp=$(SDL_OBJDIR)/%.o)
-SDL_OBJECTS_WIN32 := $(SDL_SOURCE:$(PROJECT_DIR)/src/%.cpp=$(SDL_OBJDIR)/win32/%.o)
-
-SDL_LDFLAGS = `$(SDL_ROOT_DIR)/sdl2-config --libs` \
-	      -static-libgcc -static-libstdc++
-
-TARGET_BIN_SDL = $(PROJECT_DIR)/bin/$(SDL_TARGET)
-
-RM = rm -f
-MKDIR = mkdir -p
-
-print_output = $(info $(1))
-
-#$(TARGET_BIN_SDL): $(SDL_OBJECTS)
-#	@echo $@
-#	@$(LD) $@ $(LFLAGS) $(SDL_OBJECTS) `sdl2-config --libs`
-
-#$(SDL_OBJECTS): $(SDL_OBJDIR)/%.o : $(PROJECT_DIR)/src/%.cpp
-#	@echo $@
-#	@$(CC) $(CFLAGS) `sdl2-config --cflags` -c $< -o $@
-
-########################################################################
-#
 # Detect OS
 ifeq ($(OS),Windows_NT)
     CURRENT_OS = WINDOWS
@@ -70,7 +24,34 @@ else
     endif
 endif
 
-$(call print_output,$(CURRENT_OS))
+PROJECT_DIR = $(current_dir)
+
+CFLAGS_STD       = -std=gnu11
+
+# other library flags to consider
+# static-libgcc
+# static-libstdc++
+
+CXXFLAGS_STD     = -std=gnu++11 -fno-threadsafe-statics
+CXXFLAGS        += -pedantic -Wall -Wextra
+
+CURRENT_DIR      = $(shell basename $(CURDIR))
+OBJDIR           = $(PROJECT_DIR)/bin/Arduboy/$(CURRENT_DIR)
+
+SDL_OBJDIR       = $(PROJECT_DIR)/obj
+
+SDL_SOURCE      := $(wildcard $(PROJECT_DIR)/src/*.cpp)
+SDL_INCLUDE     := $(wildcard $(PROJECT_DIR)/src/*.h)
+
+SDL_OBJECTS     := $(SDL_SOURCE:$(PROJECT_DIR)/src/%.cpp=$(SDL_OBJDIR)/%.o)
+
+RM = rm -f
+MKDIR = mkdir -p
+
+print_output = $(info $(1))
+
+########################################################################
+
 define ARDUBOY_HELP
 Available targets:
   make                   - compile the code
@@ -79,27 +60,17 @@ endef
 
 export ARDUBOY_HELP
 
+$(call print_output,$(CURRENT_OS))
 $(call print_output,$(MAKECMDGOALS))
 
-ECHO = printf
-
-ifeq (sdl_win,$(MAKECMDGOALS))
-    CXX = x86_64-w64-mingw32-g++
-endif
-
-SDL_LIBS = 
 SDL_EXTRALIBS = -lSDL2_image
+BINARIES = game game_win32
 
-win32: CROSS_TOOLS_LOC := /usr/x86_64-w64-mingw32
-win32: CXX := x86_64-mingw32-g++
-win32: CXXFLAGS := -I$(CROSS_TOOLS_LOC)/lib
-
-$(SDL_OBJECTS_WIN32): CROSS_TOOLS_LOC := /usr/x86_64-w64-mingw32
-$(SDL_OBJECTS_WIN32): CXX := x86_64-w64-mingw32-g++
-$(SDL_OBJECTS_WIN32): CXXFLAGS := -I$(CROSS_TOOLS_LOC)/include/SDL2
-
-$(TARGET_BIN_SDL)_win32: LD := x86_64-w64-mingw32-g++
-$(TARGET_BIN_SDL)_win32: LFLAGS := -static -static-libgcc
+game_win32: CC := i686-w64-mingw32-gcc
+game_win32: CXX := i686-w64-mingw32-g++
+game_win32: LD := i686-w64-mingw32-g++
+#game_win32: LDFLAGS := -static -static-libgcc
+game_win32: CXXFLAGS += -Wl,-subsytem,windows -I/usr/i686-w64-mingw32/include
 ####
 # Linux standard
 ####
@@ -108,23 +79,42 @@ $(TARGET_BIN_SDL)_win32: LFLAGS := -static -static-libgcc
 
 #$(SDL_OBJECTS): $(SDL_OBJDIR)/%.o : $(PROJECT_DIR)/src/%.cpp
 #	$(CXX) $(CXXFLAGS) `sdl2-config --cflags` -c $< -o $@
+ECHO = printf
+RM = rm -f
 
-####
-# Windows attempt using mingw
-###
-$(TARGET_BIN_SDL): $(SDL_OBJECTS_WIN32)
-	$(LD) $@ $(LFLAGS) $(SDL_OBJECTS_WIN) `sdl-config --libs`
+LDFLAGS =
 
-$(SDL_OBJECTS_WIN32): $(SDL_OBJDIR)/win32/%.o : $(PROJECT_DIR)/src/%.cpp
-	$(CXX) $(CXXFLAGS) `sdl2-config --cflags` -c $< -o $@
+sdl_cflags := $(shell $(win32_usr_path)/sdl2-config --cflags)
+sdl_libs := $(shell $(win32_usr_path)/sdl2-config --libs)
+
+#$(call print_output, $(sdl_cflags))
+#$(call print_output, $(sdl_libs))
+
+override CXXFLAGS += $(sdl_cflags)
+override LIBS += $(sdl_libs)
 
 ####
 # Targets
 ####
-sdl_win:
-	echo "building SDL2..."
+
+all: game_win32
+
+game: $(SDL_OBJECTS)
+	$(CXX) $(LIBS) $^ -o $@
+
+game_win32: $(SDL_OBJECTS)
+	$(CXX) $^ -o bin/$@.exe $(LIBS) 
+
+$(SDL_OBJECTS): $(SDL_OBJDIR)/%.o : $(PROJECT_DIR)/src/%.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 help:
 	echo "$$ARDUBOY_HELP"
+clean:
+	$(RM) obj/*.o
+	$(RM) $(addprefix bin/, $(BINARIES))
+	$(RM) $(addprefix bin/, $(addsuffix .exe, $(BINARIES)))
+
+.PHONEY: all help clean game game_win32
 
 #rule1:
 #	@echo  $@
