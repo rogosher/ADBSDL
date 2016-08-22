@@ -5,8 +5,8 @@
 
 obj/
 bin/
-include/
 tmp/
+include/Arduboy/
 
 sketchbook/
 

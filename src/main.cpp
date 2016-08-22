@@ -3,8 +3,7 @@
 //#define _WIN32_WINNT 0x500
 #include <windows.h>
 //#endif
-
-//#include "Arduboy.h"
+#include <stdint.h>
 /*
 #ifdef linux
 
@@ -16,6 +15,7 @@
 */
 
 #include <SDL.h>
+//#include "Arduboy.h"
 
 // Check if WIDTH or HEIGHT has been defined
 #ifndef WIDTH
@@ -24,6 +24,9 @@
 #ifndef HEIGHT
 #define HEIGHT 64
 #endif
+
+void setup();
+void loop();
 
 struct ABDSDL {
     SDL_Renderer* renderer;
@@ -66,6 +69,7 @@ int main (int argc, char *argv[])
         return 1;
 
 
+    setup();
     // Main application loop
     for (;;)
     {
@@ -77,6 +81,7 @@ int main (int argc, char *argv[])
             if (e.type == SDL_QUIT)
                 break;
         }
+        loop();
     }
 
     SDL_DestroyRenderer(ABDSDL.renderer);
