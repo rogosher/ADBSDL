@@ -31,7 +31,7 @@ OBJDIR = obj
 
 MKDIR = mkdir -p
 
-$(OBJDIR)/Arduboy.o: $(ARDUBOY_SOURCE)
+$(OBJDIR)/Arduboy.o: $(ARDUBOY)/src/Arduboy.h $(ARDUBOY)/src/Arduboy.cpp
 	@echo $@
 	@rm -rf obj/*
 	@$(MKDIR) $(dir $@)
