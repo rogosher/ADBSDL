@@ -1,0 +1,25 @@
+  /$$$$$$  /$$$$$$$  /$$$$$$$  /$$   /$$ /$$$$$$$   /$$$$$$  /$$     /$$
+ /$$__  $$| $$__  $$| $$__  $$| $$  | $$| $$__  $$ /$$__  $$|  $$   /$$/
+| $$  \ $$| $$  \ $$| $$  \ $$| $$  | $$| $$  \ $$| $$  \ $$ \  $$ /$$/ 
+| $$$$$$$$| $$$$$$$/| $$  | $$| $$  | $$| $$$$$$$ | $$  | $$  \  $$$$/  
+| $$__  $$| $$__  $$| $$  | $$| $$  | $$| $$__  $$| $$  | $$   \  $$/   
+| $$  | $$| $$  \ $$| $$  | $$| $$  | $$| $$  \ $$| $$  | $$    | $$    
+| $$  | $$| $$  | $$| $$$$$$$/|  $$$$$$/| $$$$$$$/|  $$$$$$/    | $$    
+|__/  |__/|__/  |__/|_______/  \______/ |_______/  \______/     |__/    
+                                                                        
+
+Welcome to the Arduboy Developer's Box!
+
+The project can be found in /opt at,
+  /opt/Arduboy
+
+The Instructions below include the commmands needed build the project.
+
+Instructions:
+  cd /opt/Arduboy
+  make
+
+Notes:
+  Curently working against the Arduboy library and Arduino include.
+  Use the following command in /opt/Arduboy:
+    make -f arduboy_test.mk

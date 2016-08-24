@@ -27,6 +27,8 @@ apt-get install -y libsdl2-2.0 libsdl2-dev
 # mingw packages for compliation to Windows
 apt-get install -y mingw-w64 libc6-dev-i386
 
+# copy messsage of the day message
+cp /opt/Arduboy/scripts/motd /etc/motd
 
 # building a package for release, not needed yet.
 #apt-get build-dep arduino-mk
